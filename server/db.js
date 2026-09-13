@@ -143,10 +143,9 @@ export async function initDatabase() {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     `);
 
-    // Seed users (ensure judge/123456 and admin/admin123 always exist)
+    // Seed users (ensure test/123456 always exists)
     const usersSeed = [
-      ['judge', '123456', 'กรรมการประเมินระบบ', 'judge'],
-      ['admin', 'admin123', 'ผู้ดูแลระบบ', 'admin']
+      ['test', '123456', 'ผู้ใช้งานทดสอบระบบ', 'tester']
     ];
 
     for (const user of usersSeed) {

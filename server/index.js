@@ -357,12 +357,12 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(400).json({ success: false, message: 'กรุณากรอกชื่อผู้ใช้งานและรหัสผ่าน' });
     }
 
-    // 1. Fallback check for demo accounts (guarantees judge/123456 and admin/admin123 always work)
+    // 1. Primary check for test account (guarantees test/123456 always works)
     if (u === 'test' && p === '123456') {
       return res.json({
         success: true,
         message: 'เข้าสู่ระบบสำเร็จ',
-        user: { userId: 1, username: ' test', fullName: 'test', role: 'test' }
+        user: { userId: 1, username: 'test', fullName: 'ผู้ใช้งานทดสอบระบบ', role: 'tester' }
       });
     }
 

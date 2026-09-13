@@ -29,11 +29,8 @@ export async function loginUser(username, password) {
   // Offline fallback
   const u = (username || '').trim();
   const p = (password || '').trim();
-  if (u === 'judge' && p === '123456') {
-    return { success: true, user: { userId: 1, username: 'judge', fullName: 'กรรมการประเมินระบบ', role: 'judge' } };
-  }
-  if (u === 'admin' && p === 'admin123') {
-    return { success: true, user: { userId: 2, username: 'admin', fullName: 'ผู้ดูแลระบบ', role: 'admin' } };
+  if (u === 'test' && p === '123456') {
+    return { success: true, user: { userId: 1, username: 'test', fullName: 'ผู้ใช้งานทดสอบระบบ', role: 'tester' } };
   }
   throw new Error('ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง');
 }
