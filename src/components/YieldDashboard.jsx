@@ -399,7 +399,7 @@ export default function YieldDashboard({
           <>
             {/* ---------------- ข้อมูลพื้นที่ที่คำนวณได้จากพิกัดแผนที่ (Turf.js GIS) ---------------- */}
             <div className="bg-slate-800 p-4 rounded-xl border border-emerald-500/40 space-y-3">
-              <h2 className="text-sm font-bold text-slate-200">ข้อมูลพื้นที่ที่คำนวณได้ (ระบบคำนวณจากพิกัด Turf.js)</h2>
+              <h2 className="text-sm font-bold text-slate-200">ข้อมูลพื้นที่ที่คำนวณได้</h2>
               
               <div className="bg-slate-900 p-4 rounded-xl border border-slate-700">
                 <label className="text-xs text-slate-400 block mb-1">พื้นที่ปลูกสุทธิ (ตารางเมตร ➔ ไร่)</label>
@@ -450,7 +450,7 @@ export default function YieldDashboard({
                   <div>
                     <label className="block text-[11px] text-slate-400 mb-1 font-medium flex items-center justify-between">
                       <span>พื้นที่ปลูก (ไร่)</span>
-                      <span className="text-[9px] text-emerald-400/80 font-mono">(GIS Read-only)</span>
+  
                     </label>
                     <input
                       type="number"

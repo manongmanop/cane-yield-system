@@ -119,7 +119,7 @@ export default function App() {
         setPlot(null); // ไม่เลือกแปลงแรกอัตโนมัติ ให้เป็นค่าว่างก่อนเมื่อรีเฟรช
         setPlotPoints([]);
         setCalculatedRai(0);
-        setDbStatus({ isConnected: true, isSaving: false, message: 'เชื่อมต่อฐานข้อมูลสำเร็จ' });
+        setDbStatus({ isConnected: true, isSaving: false, message: 'ระบบเชื่อมต่อกับฐานข้อมูล' });
       } else {
         setDbError('ไม่พบข้อมูลแปลงอ้อยในตาราง cane_plots บนฐานข้อมูล');
         setDbStatus({ isConnected: false, isSaving: false, message: 'ไม่พบข้อมูลใน Database' });
