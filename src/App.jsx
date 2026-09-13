@@ -7,10 +7,11 @@ import { RefreshCw, ServerCrash } from 'lucide-react';
 import * as turf from '@turf/turf';
 
 export default function App() {
-  // Authentication State
+  // Authentication State (ใช้ sessionStorage เพื่อให้ระบบบังคับ Login ใหม่ทุกครั้งที่ปิด Tab/เบราว์เซอร์)
   const [currentUser, setCurrentUser] = useState(() => {
     try {
-      const saved = localStorage.getItem('currentUser');
+      localStorage.removeItem('currentUser'); // ลบ legacy cache เก่า
+      const saved = sessionStorage.getItem('currentUser');
       return saved ? JSON.parse(saved) : null;
     } catch (e) {
       return null;
@@ -241,18 +242,19 @@ export default function App() {
   const handleLoginSuccess = (user) => {
     setCurrentUser(user);
     try {
-      localStorage.setItem('currentUser', JSON.stringify(user));
+      sessionStorage.setItem('currentUser', JSON.stringify(user));
     } catch (e) {
-      console.warn('Could not save user session to localStorage');
+      console.warn('Could not save user session to sessionStorage');
     }
   };
 
   const handleLogout = () => {
     setCurrentUser(null);
     try {
+      sessionStorage.removeItem('currentUser');
       localStorage.removeItem('currentUser');
     } catch (e) {
-      console.warn('Could not remove user session from localStorage');
+      console.warn('Could not remove user session from sessionStorage');
     }
   };
 
