@@ -186,7 +186,7 @@ app.get('/api/plots/:id', async (req, res) => {
 app.post('/api/plots', async (req, res) => {
   try {
     const { fullName, plotName, totalRai, actualTons, targetYieldPerRai, caneVariety, coordinates } = req.body;
-    
+
     // Generate unique IDs
     const timestamp = Date.now().toString().slice(-4);
     const farmerId = `FM-67${timestamp}`;
@@ -214,11 +214,11 @@ app.post('/api/plots', async (req, res) => {
       `INSERT INTO cane_plots (plot_id, farmer_id, plot_name, total_rai, cane_variety, target_yield_per_rai, boundary_geojson, center_lat, center_lng)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
-        plotId, 
-        farmerId, 
-        plotName || 'แปลงอ้อยใหม่', 
-        parseFloat(totalRai) || 0, 
-        caneVariety || 'ขอนแก่น 3', 
+        plotId,
+        farmerId,
+        plotName || 'แปลงอ้อยใหม่',
+        parseFloat(totalRai) || 0,
+        caneVariety || 'ขอนแก่น 3',
         parseFloat(targetYieldPerRai) || 13.00,
         JSON.stringify(coordinates || [[14.6465, 103.4215], [14.6515, 103.4215], [14.6515, 103.4275], [14.6465, 103.4275]]),
         centerLat,
@@ -358,19 +358,11 @@ app.post('/api/auth/login', async (req, res) => {
     }
 
     // 1. Fallback check for demo accounts (guarantees judge/123456 and admin/admin123 always work)
-    if (u === 'judge' && p === '123456') {
+    if (u === 'test' && p === '123456') {
       return res.json({
         success: true,
         message: 'เข้าสู่ระบบสำเร็จ',
-        user: { userId: 1, username: 'judge', fullName: 'กรรมการประเมินระบบ', role: 'judge' }
-      });
-    }
-
-    if (u === 'admin' && p === 'admin123') {
-      return res.json({
-        success: true,
-        message: 'เข้าสู่ระบบสำเร็จ',
-        user: { userId: 2, username: 'admin', fullName: 'ผู้ดูแลระบบ', role: 'admin' }
+        user: { userId: 1, username: ' test', fullName: 'test', role: 'test' }
       });
     }
 
