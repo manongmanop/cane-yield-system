@@ -11,10 +11,74 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
+// Fallback In-Memory Mock Data Store (used when MySQL is offline)
+let inMemoryPlots = [
+  {
+    plotId: 'PL-67001-A',
+    plotName: 'แปลงอ้อยเนินสมบูรณ์ 1',
+    farmerId: 'FM-67001',
+    farmerName: 'นายสมพงษ์ สุรินทร์มั่นคง',
+    phoneNumber: '081-234-5678',
+    totalRai: 120.00,
+    actualTons: 1680.00,
+    targetYieldPerRai: 13.00,
+    caneVariety: 'ขอนแก่น 3',
+    ndviScore: 0.800,
+    centerLat: 14.6490,
+    centerLng: 103.4245,
+    coordinates: [
+      [14.6465, 103.4215],
+      [14.6515, 103.4215],
+      [14.6515, 103.4275],
+      [14.6465, 103.4275]
+    ]
+  },
+  {
+    plotId: 'PL-67002-B',
+    plotName: 'แปลงอ้อยโคกสมบูรณ์ 2',
+    farmerId: 'FM-67002',
+    farmerName: 'นางมณี สุรินทร์พิทักษ์',
+    phoneNumber: '089-876-5432',
+    totalRai: 50.00,
+    actualTons: 700.00,
+    targetYieldPerRai: 14.00,
+    caneVariety: 'อู่ทอง 12',
+    ndviScore: 0.850,
+    centerLat: 14.6600,
+    centerLng: 103.4375,
+    coordinates: [
+      [14.6580, 103.4350],
+      [14.6620, 103.4350],
+      [14.6620, 103.4400],
+      [14.6580, 103.4400]
+    ]
+  },
+  {
+    plotId: 'PL-67003-C',
+    plotName: 'แปลงอ้อยศิลาทิพย์ 3',
+    farmerId: 'FM-67003',
+    farmerName: 'นายวิชัย เจริญทรัพย์',
+    phoneNumber: '086-555-4321',
+    totalRai: 80.00,
+    actualTons: 960.00,
+    targetYieldPerRai: 13.50,
+    caneVariety: 'ขอนแก่น 3',
+    ndviScore: 0.720,
+    centerLat: 14.6410,
+    centerLng: 103.4125,
+    coordinates: [
+      [14.6390, 103.4100],
+      [14.6430, 103.4100],
+      [14.6430, 103.4150],
+      [14.6390, 103.4150]
+    ]
+  }
+];
+
 // Initialize database tables matching cane_ki.sql on startup
 initDatabase();
 
-// GET /api/plots - List all plots directly from cane_ki_database
+// GET /api/plots - List all plots directly from cane_ki_database (with fallback)
 app.get('/api/plots', async (req, res) => {
   try {
     const query = `
@@ -59,8 +123,8 @@ app.get('/api/plots', async (req, res) => {
 
     res.json(formattedPlots);
   } catch (error) {
-    console.error('Error fetching plots from cane_ki_database:', error);
-    res.status(500).json({ error: 'Failed to fetch plots from database' });
+    console.warn('⚠️ Database query warning, serving in-memory mock data:', error.message);
+    res.json(inMemoryPlots);
   }
 });
 
@@ -196,8 +260,22 @@ app.post('/api/plots', async (req, res) => {
       plot: newPlotData
     });
   } catch (error) {
-    console.error('Error registering new farmer in database:', error);
-    res.status(500).json({ error: 'Failed to register new farmer in database' });
+    console.warn('⚠️ MySQL unavailable for POST, falling back to in-memory store:', error.message);
+    const timestamp = Date.now().toString().slice(-4);
+    const fallbackPlot = {
+      plotId: `PL-67${timestamp}-N`,
+      plotName: req.body.plotName || 'แปลงอ้อยใหม่',
+      farmerName: req.body.fullName || 'เกษตรกรใหม่',
+      phoneNumber: '081-000-0000',
+      totalRai: parseFloat(req.body.totalRai) || 0,
+      actualTons: parseFloat(req.body.actualTons) || 0,
+      targetYieldPerRai: parseFloat(req.body.targetYieldPerRai) || 13.00,
+      caneVariety: 'ขอนแก่น 3',
+      ndviScore: 0.800,
+      coordinates: req.body.coordinates || [[14.6465, 103.4215], [14.6515, 103.4215], [14.6515, 103.4275], [14.6465, 103.4275]]
+    };
+    inMemoryPlots.unshift(fallbackPlot);
+    res.json({ message: 'New farmer registered in-memory', plot: fallbackPlot });
   }
 });
 
@@ -260,8 +338,10 @@ app.put('/api/plots/:id', async (req, res) => {
 
     res.json({ message: 'Updated plot, coordinates, and delivery weight in cane_ki_database successfully', plotId: id });
   } catch (error) {
-    console.error('Error updating plot in cane_ki_database:', error);
-    res.status(500).json({ error: 'Failed to update plot in database' });
+    console.warn('⚠️ MySQL unavailable for PUT, updating in-memory store:', error.message);
+    const { id } = req.params;
+    inMemoryPlots = inMemoryPlots.map(p => p.plotId === id ? { ...p, ...req.body } : p);
+    res.json({ message: 'Updated plot in-memory', plotId: id });
   }
 });
 
